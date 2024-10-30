@@ -1,1 +1,48 @@
-{}
+{
+    "Michele": {
+      "3eme annee": [
+        {
+          "type": 2,
+          "velocity": 255,
+          "effect": -5,
+          "pan": 8,
+          "tilt": -25,
+          "wait": 2000
+        },
+        {
+          "type": 1,
+          "velocity": 205,
+          "effect": -3,
+          "pan": 2,
+          "tilt": -20,
+          "wait": 2500
+        },
+        {
+          "type": 0,
+          "velocity": 69,
+          "effect": 0,
+          "pan": 4,
+          "tilt": -13,
+          "wait": 5000
+        },
+        {
+          "type": 0,
+          "velocity": 69,
+          "effect": 0,
+          "pan": 4,
+          "tilt": -10,
+          "wait": 6969
+        }
+      ],
+      "1er annee": [
+        {
+          "type": 0,
+          "velocity": 127,
+          "effect": 5,
+          "pan": 0,
+          "tilt": 15,
+          "wait": 2000
+        }
+      ]
+    }
+}
