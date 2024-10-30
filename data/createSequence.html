@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title> Terrain de tennis IHM </title>
+  <style>
+     body {
+      text-align: center;
+      max-width:50% ;
+      margin: auto;
+      bottom: 90%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction:column ;  /* Pour aligner les éléments verticalement */
+      /* height: 100vh;
+      margin: 0; */
+      background-color: rgb(255, 255, 255); /* Changer la couleur de fond en bleu */
+      color: rgb(25, 0, 255); /* Couleur du texte */
+    }
+
+    /* Styles pour le terrain de tennis */
+    #titre {
+      font-size: 24px;
+      margin-top: 20px; /* Espace entre le titre et le reste du contenu */
+    }
+
+    #conteneur {
+      display: flex;
+      align-items: center;
+      flex-direction: column; /* Pour aligner les éléments verticalement */
+      position: relative;
+    }
+
+    .terrain {
+      /*left: 80px;*/
+      width: 300px;
+      height: 300px;
+      background-color: rgba(0, 255, 76, 0.89);
+      border: 2px solid black;
+      border-radius: 15px; /* Coins arrondis */
+      position: relative;
+      display: flex;
+      flex-direction:column ;
+      justify-content: space-around;
+      align-items: center;
+    }
+
+    .terrain::before,
+    .terrain::after {
+      content: '';
+      position: absolute;
+      width: 2px;
+      height: 100%;
+    }
+
+    .terrain::before {
+      left: 0;
+    }
+
+    .terrain::after {
+      right: 0;
+    }
+
+    .ligneBoules {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .balle {
+      width: 25px;
+      height: 25px;
+      background-color: rgb(255, 255, 255);
+      border-radius: 50%;
+      margin-right: 10px; /* Ajusté à 10px */
+      margin-top: 10px;
+      cursor: pointer; /* Ajout de curseur pointer pour indiquer que les balles sont cliquables */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .lettre {
+      font-size: 12px;
+    }
+
+    .balle.cliquee {
+      background-color: rgba(255, 0, 0, 0.5); /* couleur de fond pour une balle cliquée */
+    }
+
+    #adjustButtons {
+      display: flex;
+      justify-content: space-between;
+      width: 90%;
+    }
+
+    .adjustButton {
+      padding: 10px 20px;
+      font-size: 20px;
+      cursor: pointer;
+      background-color: white; /* Ajout de fond blanc */
+    }
+
+    .adjustButton:focus {
+      outline: none; /* Supprime la mise en surbrillance au clic */
+    }
+  </style>
+</head>
+<body>
+
+<div id="titre">IHM TENBOT</div>
+
+<form action="/new" target = "hidden-forme" id="ballForm" style="display: inline-block; text-align: right; position:relative">
+  <input type="hidden" id="hidden-ballNum" name="HTML_btnNum" value="1">
+  <input type="hidden" id="hidden-ballVal0" name="HTML_BN0" value="">
+
+  <label for='userName' name='HTML_userName'>Nom d'utilisateur: </label>
+  <input type="text" id="userName" name="HTML_userName" required>
+  <p></p>
+  <label for='SequenceName' name='HTML_userSqName'>Nom de séquence: </label>
+  <input type="text" id="SequenceName" name="HTML_userSqName" required>
+   
+  <button class="adjustButton" id="btn-submit" onclick="updateBallValue();changeAction('/new')" style="position:absolute;top:500px; width:275px; font-size: larger; right: 15px; ">Envoyer</button>	
+  <button class="adjustButton" id="btn-submit" onclick="updateBallValue();changeAction('/play')" style="position:absolute;top:550px; width:275px; font-size: larger; right: 15px;">Jouer</button>
+</form>
+
+<div>
+  <p></p>
+
+  <label for="btn" id="HTML_btnVal" name="HTML_btnVal" style="font-size: 24px;">1</label>
+  <label for="btn" style="font-size: 24px;">/6 </label>
+  <button class="adjustButton" id="btn" onclick="newElm()">+</button>
+
+  <button class="adjustButton" id="previous" onclick="changeBall(0)" disabled>←</button>
+  <button class="adjustButton" id="next" onclick="changeBall(1)" disabled>→</button>
+</div>
+
+<p></p>
+
+<div id="parameter0" style="display:flex ;">
+
+  <div class="terrain">
+    <p id="ballNum" style="width:100%;text-align: left;margin: 0;">balle: 1</p>
+    <label>Type/Couleur de balle:
+    <select id="HTML_balltype0" name="HTML_balltype0"></label>
+      <option value="jaune">jaune</option>
+      <option value="vert">vert</option>
+      <option value="orange">orange</option>
+    </select>
+
+    <div class="ligneBoules">
+      <div class="balle" id="BT" onclick="afficherContenu(-5,0)"><span class="lettre">BT</span></div>
+      <div class="balle" id="BC" onclick="afficherContenu(-3,0)"><span class="lettre">BC</span></div>
+      <div class="balle" id="AU" onclick="afficherContenu(0,0)"><span class="lettre">AU</span></div>
+
+      <div class="balle" id="EL" onclick="afficherContenu(1,0)"><span class="lettre">EL</span></div>
+      <div class="balle" id="SP" onclick="afficherContenu(3,0)"><span class="lettre">SP</span></div>
+      <div class="balle" id="SW" onclick="afficherContenu(5,0)"><span class="lettre">SW</span></div>
+    </div>
+    <input id="HTML_balleffect0" type ="number" min="-5" max="5" value="0" style="visibility: hidden;">
+    
+    <div id="adjustButtons">
+      <button class="adjustButton" id="decrease" onclick="decreaseTime(0)">-</button>
+       <span id="ballwait0">2.0s</span>
+      <button class="adjustButton" id="increase" onclick="increaseTime(0)">+</button>
+    </div>
+    <input id="HTML_ballwait0" type ="number" min="2000" max="10000" value="2000" readonly style="visibility: hidden;">
+    
+    <div>
+      <label id="pourcentage0">Vitesse: 19.9%</label>
+    </div>
+    <input type="range" id="HTML_ballvelocity0" min="15" max="175" step="5" value="30" oninput="sliderInput(this.value,0)" />
+
+    <div>
+      <label>PAN: </label>
+      <input id="HTML_ballpan0" type ="range" step="1" min="-2" max="2" name="HTML_ballpan0" value="0" required>
+      <p></p>
+      <label >TILT: </label>
+      <input id="HTML_balltilt0" type ="range" step="1" min="-4" max="4"  name="HTML_balltilt0" value="0" required>
+    </div>
+  </div>
+</div>
+
+<script>
+  const HTML_nameSpec = ['HTML_balltype', 'HTML_ballvelocity', 'HTML_balleffect', 'HTML_ballpan', 'HTML_balltilt', 'HTML_ballwait'];
+	let showingBall = 0;
+  let nbDiv = 1;
+
+	updateBallValue();
+
+	function newElm()
+	{
+		if(nbDiv < 6) {
+			// uptade hidden-ball value
+			updateBallValue();
+
+			// update the number of ball
+			document.getElementById("hidden-ballNum").value = nbDiv; //what is going to be request in the /get
+			nbDiv++;
+			document.getElementById("HTML_btnVal").innerHTML = nbDiv; //what's show on the screen
+
+			// clone what need to be cloned (div parameter AND hidden-ball id value)
+			// div paramater
+			var original = document.getElementById('parameter' + (nbDiv-2));
+			var clone = original.cloneNode(true); // "deep" clone
+			clone.id = "parameter" + (nbDiv-1); // there can only be one element with an ID
+			original.parentNode.appendChild(clone);
+			// hidden-ball id value
+			var original = document.getElementById('hidden-ballVal' + (nbDiv-2));
+			var clone = original.cloneNode(true); // "deep" clone
+			clone.id = "hidden-ballVal" + (nbDiv-1); // there can only be one element with an ID
+			clone.setAttribute("name", 'HTML_BN' + (nbDiv-1));
+			original.parentNode.appendChild(clone);
+
+			//console.log(clone);
+      //change ball attribute id in the cline
+			for(var i=0; i<6; i++) {
+				var changeBallId = document.querySelector('#parameter' + (nbDiv-1) + ' #' + HTML_nameSpec[i] + (nbDiv-2));
+				changeBallId.id = HTML_nameSpec[i] + (nbDiv-1);
+				changeBallId.setAttribute("name", HTML_nameSpec[i] + (nbDiv-1));
+			}
+
+      document.getElementById('parameter'+(nbDiv-2)).style.display = "none";
+      document.querySelector('#parameter' + (nbDiv-1) + ' #ballNum').innerHTML = "balle: " + nbDiv;
+
+      document.querySelector('#parameter' + (nbDiv-1) + ' #BT').setAttribute('onclick', 'afficherContenu(-5,'+ (nbDiv-1) +')');
+      document.querySelector('#parameter' + (nbDiv-1) + ' #BC').setAttribute('onclick', 'afficherContenu(-3,'+ (nbDiv-1) +')');
+      document.querySelector('#parameter' + (nbDiv-1) + ' #AU').setAttribute('onclick', 'afficherContenu(0,'+ (nbDiv-1) +')');
+      document.querySelector('#parameter' + (nbDiv-1) + ' #EL').setAttribute('onclick', 'afficherContenu(1,'+ (nbDiv-1) +')');
+      document.querySelector('#parameter' + (nbDiv-1) + ' #SP').setAttribute('onclick', 'afficherContenu(3,'+ (nbDiv-1) +')');
+      document.querySelector('#parameter' + (nbDiv-1) + ' #SW').setAttribute('onclick', 'afficherContenu(5,'+ (nbDiv-1) +')');
+      
+      document.querySelector('#parameter' + (nbDiv-1) + ' #ballwait'+ (nbDiv-2)).setAttribute('id', 'ballwait'+ (nbDiv-1));
+      document.querySelector('#parameter' + (nbDiv-1) + ' #decrease').setAttribute('onclick', 'decreaseTime('+ (nbDiv-1) +')');
+      document.querySelector('#parameter' + (nbDiv-1) + ' #increase').setAttribute('onclick', 'increaseTime('+ (nbDiv-1) +')');
+
+      document.querySelector('#parameter' + (nbDiv-1) + ' #pourcentage' + (nbDiv-2)).setAttribute('id', 'pourcentage' + (nbDiv-1));
+      document.querySelector('#parameter' + (nbDiv-1) + ' #HTML_ballvelocity' + (nbDiv-1)).setAttribute('oninput', 'sliderInput(this.value,'+ (nbDiv-1) +')');
+      
+
+			// uptade the new hidden-ball value
+			updateBallValue();
+
+      document.getElementById("previous").disabled = false;
+      showingBall++;
+
+      if(nbDiv==6) {document.getElementById("btn").disabled = true;}
+		}
+	}
+
+	function updateBallValue()
+	{
+    for(j=0; j<nbDiv; j++) {
+      var conf = new String('!');
+      document.getElementById('hidden-ballVal' + j).value = "";
+      for(var i=0; i<6; i++) {
+        conf += HTML_nameSpec[i].substring(HTML_nameSpec[i].search("ball")+4);
+        conf += ':';
+        conf += document.querySelector('#parameter' + j + ' #' + HTML_nameSpec[i] + j).value;
+        conf += (i==5) ? '!' : ',';
+      }
+      document.getElementById('hidden-ballVal' + j).value = conf;
+    }
+	}
+
+  function changeBall(order) {
+    document.getElementById('parameter'+showingBall).style.display = "none" ;
+
+    if(order==0) { //previous
+      if(showingBall != 0) {
+        showingBall--;
+        document.getElementById('parameter'+showingBall).style.display = "flex";
+        document.getElementById("next").disabled = false;
+      }
+      if(showingBall == 0) {
+        document.getElementById("previous").disabled = true;
+        
+      }
+    }
+    else { //next
+      if(showingBall < nbDiv-1) {
+        showingBall++;
+        document.getElementById('parameter'+showingBall).style.display = "flex";
+        document.getElementById("previous").disabled = false;
+      }
+      if(showingBall == nbDiv-1) {
+        document.getElementById("next").disabled = true; 
+      }
+    }
+  }
+
+  function changeAction(path) {
+    if(path != "/new") {
+      document.getElementById("ballForm").action = path;
+      document.getElementById("userName").disabled = true;
+      document.getElementById("SequenceName").disabled = true;
+    }
+    else {
+      document.getElementById("ballForm").action = path;
+      document.getElementById("userName").disabled = false;
+      document.getElementById("SequenceName").disabled = false;
+    }
+  }
+
+  function map_range(value, low1, high1, low2, high2) {
+    return low2 + (high2 - low2) * (value - low1) / (high1 - low1);
+  }
+
+  //------------------------------------------------------------------//
+
+  function afficherContenu(effectVal,numDiv) {
+    //console.log(document.getElementById('HTML_balleffect' + numDiv), document.getElementById('HTML_balleffect' + numDiv).value);
+    //console.log(effectVal, numDiv);
+    document.getElementById('HTML_balleffect' + numDiv).value = effectVal;
+  }
+
+  function sliderInput(valeur,numDiv) {
+    // Afficher la valeur en pourcentage en temps réel
+    document.querySelector('#parameter' + numDiv + ' #pourcentage' + numDiv).textContent = "Vitesse: " + map_range(valeur,15,175,11.6,100).toFixed(1) + "%";
+  }
+
+  function decreaseTime(numDiv) {
+    var timerDisplay = document.getElementById('ballwait'+numDiv);
+    var time = parseFloat(timerDisplay.textContent);
+    if (time > 2) {
+      time -= 0.1;
+      timerDisplay.textContent = time.toFixed(1)+'s';
+    }
+    document.getElementById('HTML_ballwait' + numDiv).value = Math.floor(time*1000);
+  }
+
+  function increaseTime(numDiv) {
+    var timerDisplay = document.getElementById('ballwait'+numDiv);
+    var time = parseFloat(timerDisplay.textContent);
+    if (time < 10) {
+      time += 0.1;
+      timerDisplay.textContent = time.toFixed(1)+'s';
+    }
+    document.getElementById('HTML_ballwait' + numDiv).value = Math.floor(time*1000);
+  }
+</script>
+</body>
+</html>

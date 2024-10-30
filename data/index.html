@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8"/>
+		<title>test communication esp ihm</title>
+	</head>
+    <style>
+        #adjustButtons {
+            display: flex;
+            justify-content: space-between;
+            width: 90%;
+        }
+
+        .adjustButton {
+            padding: 10px 20px;
+            font-size: 20px;
+            cursor: pointer;
+            background-color: white; /* Ajout de fond blanc */
+        }
+
+        .adjustButton:focus {
+            outline: none; /* Supprime la mise en surbrillance au clic */
+        }
+    </style>
+<body style="zoom: 3; -moz-transform: scale(3); -moz-transform-origin: 0 0;">	
+    <b>tenBot manager de sequence</b>
+    <div>
+        <input type="radio" id="create" name="sqManger" onclick="toggleVisible()" checked/>
+        <label for="create">crée une séquence</label>
+      
+        <input type="radio" id="change" name="sqManger" onclick="toggleVisible()"/>
+        <label for="create">choisire une séquence</label>
+    </div>
+    
+    <div>
+        <form action="/modif" target = "hidden-forme" id="showModif" style="visibility: hidden ;text-align: left;">
+            <label for='HTML_userName' name='HTML_userName'>Nom d'utilisateur: </label>
+            <input type="text" id="userName" name="HTML_userName" required>
+            <p></p>
+            <label for='HTML_userSqName' name='HTML_userSqName'>Nom de séquence: </label>
+            <input type="text" id="SequenceName" name="HTML_userSqName" required>
+            <p></p>
+            <button class="adjustButton" type="submit">OK</button>
+        </form>
+    </div>
+
+    <button type="submit" class="adjustButton" id="showCreate" style="visibility: visible;" onclick="goTo('/create')">OK</button>
+
+</body>
+<script>
+    function toggleVisible()
+    {
+        if(document.getElementById('change').checked) {
+            document.getElementById('showModif').style.visibility = 'visible';
+            document.getElementById('showCreate').style.visibility = 'hidden';
+        }
+       else {
+            document.getElementById('showModif').style.visibility = 'hidden';
+            document.getElementById('showCreate').style.visibility = 'visible';
+       }
+    }
+
+    function goTo(url) { window.location.href = url; }
+</script>
+</html>
